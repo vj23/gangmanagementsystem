@@ -33089,11 +33089,6 @@ AmplifyGreetings.style = amplifyGreetingsCss;
 .site-layout-background {
   background: #fff;
 }
-.dashboard--Widget {
-  width: 100%;
-  height: 100%;
-  border: 1px solid lightgray;
-}
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return icons; });
 /* harmony import */ var _index_3fb5c139_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index-3fb5c139.js */ "./node_modules/@aws-amplify/ui-components/dist/esm-es5/index-3fb5c139.js");
