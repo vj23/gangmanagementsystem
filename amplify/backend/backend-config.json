@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "ngtechcentralisedban2300c71f": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}

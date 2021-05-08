@@ -1,0 +1,44 @@
+module.exports={
+    ADEN:{
+        role:"admin",
+        children:["BMY","BXA"]
+    },
+    BMY:{
+        role:"incharge",
+        children:["SECT1","SECT2","SECT3"]
+    },
+    BXA:{
+        role:"incharge",
+        children:["SECT1","SECT2","SECT3","SECT4"]
+    },
+    BMYSECT1:{
+        role:"section",
+        children:["DTM29","DTM30","DTM31"]
+    },
+    BMYSECT2:{
+        role:"section",
+        children:["DTM32","DTM33","DTM34"]
+    },
+    BMYSECT3:{
+        role:"section",
+        children:["STOREGANG"]
+    },
+    BXASECT1:{
+        role:"section",
+        children:["DTM19","DTM20","DTM21"]
+    },
+    BXASECT2:{
+        role:"section",
+        children:["DTM22","DTM23","DTM24"]
+    },
+    BXASECT3:{
+        role:"section",
+        children:["DTM25","DTM26","DTM27","DTM28"]
+    },
+    BXASECT4:{
+        role:"section",
+        children:["DRZKETIGANG"]
+    }
+    
+}
+
