@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Card } from 'antd';
 import { Tabs } from 'antd';
-import Compliance from './components/Compliance';
-import Grievance from './components/Grievance';
 import Contractual from './components/Contractual';
+import GangTaskUpdate from './components/GangTaskUpdate';
+import AdminConsole from './AdminConsole';
 const { TabPane } = Tabs;
 function callback(key) {
   console.log(key);
@@ -11,22 +11,37 @@ function callback(key) {
 export default class App extends React.Component<any, any>{
 
   render() {
+    let { role} = this.props.loginUserObj;
     return (
       <Card>
-        <Tabs defaultActiveKey="1" onChange={callback}>
-          <TabPane tab="Compliance" key="1">
-            <Compliance />
-          </TabPane>
-          <TabPane tab="Grievnace and material requirement" key="2">
-            <Grievance />
-          </TabPane>
-          <TabPane tab="Contractual" key="3">
-            <Contractual />
-          </TabPane>
-          <TabPane tab="Machine" key="4">
-          <Contractual />
-          </TabPane>
-        </Tabs>
+        {role == "section" ?
+          <Tabs defaultActiveKey="1" onChange={callback}>
+
+            <TabPane tab="WorkUpdate" key="1">
+              <GangTaskUpdate {...this.props} action={"task"}/>
+            </TabPane>
+            <TabPane tab="Compliance" key="2">
+              <GangTaskUpdate {...this.props} action={"compliance"}/>
+            </TabPane>
+            <TabPane tab="Grievnace and material requirement" key="3">
+              <GangTaskUpdate {...this.props} action={"grievance"}/>
+            </TabPane>
+          </Tabs>
+          :
+
+          <Tabs defaultActiveKey="4" onChange={callback}>
+            <TabPane tab="Contractual" key="4">
+              <Contractual {...this.props} action={"contractual"}/>
+            </TabPane>
+            <TabPane tab="Machine" key="5">
+              <Contractual {...this.props} action={"machine"}/>
+            </TabPane>
+            <TabPane tab="DashBoard" key="6">
+              <AdminConsole />
+            </TabPane>
+
+          </Tabs>
+        }
       </Card >
     )
   }

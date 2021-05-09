@@ -8,12 +8,14 @@ Amplify.configure(awsconfig);
 import AdminConsole from './AdminConsole';
 import Applcation from './App';
 import Header from './HeaderComp';
+import HierarchyTree from './HierarchyTree';
 
-class MainApp extends React.Component<any,any> {
+class MainApp extends React.Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {
-            user:""
+            user: "",
+            loginUserObj:{}
         }
     }
     componentDidMount() {
@@ -21,17 +23,18 @@ class MainApp extends React.Component<any,any> {
         Auth.currentAuthenticatedUser({
             bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
         }).then(user => {
-            console.log(user);
-            if (user.attributes.email == "jainvaibhav211@gmail.com") {
+            let email=user.attributes.email;
+            let loginUserObj=HierarchyTree[email.split("@")[0]]
+            if (loginUserObj.role=="admin") {
                 this.setState({
-                    user: "nodal",
-                    email:user.attributes.email 
+                    user: "admin",
+                    loginUserObj: loginUserObj,
                 })
             }
-            else{
+            else {
                 this.setState({
-                    user: "bank",
-                    email:user.attributes.email 
+                    user: "inchargeOrSection",
+                    loginUserObj: loginUserObj
                 })
             }
         }
@@ -39,14 +42,12 @@ class MainApp extends React.Component<any,any> {
             .catch(err => console.log(err));
     }
     render() {
-
-
         return (
-            <div style={{height:"100%"}}>
-                
-                <Header name={this.state.email}/>
+            <div style={{ height: "100%" }}>
+
+                <Header name={this.state.loginUserObj.username} />
                 {
-                    this.state.user=="nodal"?<AdminConsole />:<Applcation />
+                    this.state.user == "admin" ? <AdminConsole /> : <Applcation loginUserObj={this.state.loginUserObj}/>
                 }
             </div>
         )

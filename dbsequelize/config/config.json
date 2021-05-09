@@ -2,7 +2,7 @@
   "development": {
     "username": "postgres",
     "password": "postgres",
-    "database": "ngtechcentralisedbanking",
+    "database": "gangmanagementsystem",
     "host": "database-2.cgkrymfuvhvu.ap-south-1.rds.amazonaws.com",
     "dialect": "postgres",
     "port":5432

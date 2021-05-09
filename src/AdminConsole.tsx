@@ -3,33 +3,19 @@ import { Table } from 'antd';
 import { Card } from 'antd';
 import * as moment from 'moment'
 import { DatePicker, Space } from 'antd';
-import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import { Input, Button } from 'antd';
+import { Select } from 'antd';
+const { Option } = Select;
+
 const { RangePicker } = DatePicker;
-const dataSource = [
-  {
-    key: '1',
-    name: 'Mike',
-    age: 32,
-    address: '10 Downing Street',
-  },
-  {
-    key: '2',
-    name: 'John',
-    age: 42,
-    address: '10 Downing Street',
-  },
-];
-
-
-
 export default class Admin extends React.Component {
   state = {
     dataSource: [],
     searchText: '',
     searchedColumn: '',
-    filters: {}
+    filters: {},
+    columns: []
   }
 
   searchInput;
@@ -141,17 +127,23 @@ export default class Admin extends React.Component {
         ...this.getColumnSearchProps('incharge'),
       },
       {
+        title: 'Section',
+        dataIndex: 'section',
+        key: 'section',
+        ...this.getColumnSearchProps('section'),
+      },
+      {
         title: 'Gang',
         dataIndex: 'gang',
         key: 'gang',
         ...this.getColumnSearchProps('gang'),
-        
+
       },
       {
-        title: 'Unit',
-        dataIndex: 'unit',
-        key: 'unit',
-        ...this.getColumnSearchProps('unit'),
+        title: 'Work Assigned',
+        dataIndex: 'task',
+        key: 'task',
+        ...this.getColumnSearchProps('task'),
       },
       {
         title: 'Compliance',
@@ -160,42 +152,81 @@ export default class Admin extends React.Component {
         ...this.getColumnSearchProps('compliance'),
       },
       {
-        title: 'Material Requirement',
-        dataIndex: 'materialreq',
-        key: 'materialreq',
-        ...this.getColumnSearchProps('materialreq'),
-      },
-      {
-        title: 'Other',
-        dataIndex: 'other',
-        key: 'other',
-        ...this.getColumnSearchProps('other'),
-      },
-      {
-        title: 'Grievance',
+        title: 'Material Requirement and Grievance',
         dataIndex: 'grievance',
         key: 'grievance',
         ...this.getColumnSearchProps('grievance'),
       },
       {
+        title: 'Contractual',
+        dataIndex: 'contractual',
+        key: 'contractual',
+        ...this.getColumnSearchProps('contractual'),
+      },
+      {
+        title: 'Machine',
+        dataIndex: 'machine',
+        key: 'machine',
+        ...this.getColumnSearchProps('machine'),
+      },
+      {
         title: 'Created At',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        dataIndex: 'updatedDt',
+        key: 'updatedDt',
       }
     ];
 
-
+    //const columnBase = ["incharge", "section", "gang", "task", "compliance", "grievance", "contractual", "machine", "updatedDt"]
     const dateFormat = 'YYYY/MM/DD';
+    let columnFinal = [];
+    let children = []
+    for (let i = 0; i < 9; i++) {
+      children.push(<Option value={columns[i].dataIndex} obj={columns[i]}>{columns[i].dataIndex}</Option>);
+    }
+
+    if (this.state.columns.length == 0) {
+      columnFinal = columns;
+    }
+    else {
+      columnFinal = this.state.columns;
+    }
+
     return (
       <div>
-        <RangePicker
-          onChange={this.onChangeHandler.bind(this)}
-          format={dateFormat}
-        />
-        <Card><Table dataSource={this.state.dataSource} columns={columns} /></Card>
+        <div style={{display:"flex"}}>
+          <div>
+            <RangePicker
+              onChange={this.onChangeHandler.bind(this)}
+              format={dateFormat}
+            />
+          </div>
+          <div style={{width:"33%",marginLeft:"20px"}}>
+            <Select
+              mode="multiple"
+              allowClear
+              style={{ width: '100%' }}
+              placeholder="Please select"
+              //defaultValue={['a10', 'c12']}
+              onChange={this.handleChange.bind(this)}
+            >
+              {children}
+            </Select>
+          </div>
+        </div>
+
+        <Card><Table dataSource={this.state.dataSource} columns={columnFinal} /></Card>
       </div >
     )
 
 
+  }
+  handleChange(values, columns) {
+
+    let obj = columns.map(element => {
+      return element.obj
+    });
+    this.setState({
+      columns: obj
+    })
   }
 }

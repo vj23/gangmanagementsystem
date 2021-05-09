@@ -4,23 +4,12 @@ const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
 const config = require('./webpack.config.dev');
-const accountSid = 'ACa96460e2ea783a1aa6cba214062242a4';
-const authToken = '24786511e125ab2940fef076c1c69669';
-const client = require('twilio')(accountSid, authToken);
 var bodyParser = require('body-parser');
-var loginJson = require('./loginJson');
-const { Op } = require('sequelize');
-const upload = require("./middlewares/upload");
-const excelController = require("./controllers/tutorials/excel.controller");
-
-console.log(loginJson);
 var urlencodedParser = bodyParser.urlencoded({ extended: true })
-
-var moment = require('moment')
-
 const app = express();
 const compiler = webpack(config);
 const models = require('./dbsequelize/models')
+const { Op } = require('sequelize');
 
 global.__basedir = __dirname;
 
@@ -34,61 +23,22 @@ app.use(require('webpack-dev-middleware')(compiler, {
 app.use(express.static(__dirname));
 
 app.use(bodyParser.json());
-/* app.post('/updateWork', urlencodedParser, function (req, res) {
-
+app.post('/updateWork', urlencodedParser, function (req, res) {
   console.log(req.body)
-  let task = models.task.build(
+
+  /* let task = models.task.build(
     req.body
-  )
-  task.save().then(function () { })
+  ) */
 
-  let msg = req.body.incharge + "  Task1 Status: " + req.body.id
-  client.messages
-    .create({
-      body: msg,
-      from: 'whatsapp:+14155238886',
-      to: 'whatsapp:+918588897294'
-    })
-    .then(message => console.log(message.sid))
-    .done();
-
-  client.messages
-    .create({
-      body: msg,
-      from: 'whatsapp:+14155238886',
-      to: 'whatsapp:+919106427762'
-    })
-    .then(message => console.log(message.sid))
-    .done();
-
-  res.status(200).send("updated")
-}) */
-
-app.post('/loginAuthentication', urlencodedParser, function (req, res) {
-
-  console.log(req.body)
-  let username = req.body.username
-  let response = {}
-
-  if (loginJson[username]) {
-    if (loginJson[username]['password'] == req.body.password) {
-      console.log("Validating id and password")
-      response['role'] = loginJson[username]['role']
-      response['gangs'] = loginJson[username]['gangs']
-      response['unit'] = loginJson[username]['unit']
-      response['incharge'] = loginJson[username]['incharge']
-      response['error'] = "authorised"
-    } else {
-      console.log("Wrong password")
-      response['error'] = 'Wrong password'
-    }
-  }
-  else {
-    console.log("Wrong username")
-    response['error'] = 'Username not availble'
-  }
-  res.end(JSON.stringify(response))
-})
+  models.task.bulkCreate(req.body,{ ignoreDuplicates: true })
+  .then(() => {
+    res.status(200).send({
+      message: "updated",
+    });
+  })
+  //task.save().then(function () { })
+  //res.status(200).send("updated")
+}) 
 
 app.post('/getAllForAdmin', urlencodedParser, function (req, res) {
   let startDate = req.body.startDate
@@ -96,28 +46,24 @@ app.post('/getAllForAdmin', urlencodedParser, function (req, res) {
   console.log(startDate)
   console.log(endDate)
   if (startDate == undefined) {
-    models.users.findAll().then(function (data) {
+    models.task.findAll().then(function (data) {
       res.end(JSON.stringify(data))
-
     })
   }
   else {
-    models.users.findAll(/* {
+    models.task.findAll({
       where: {
-        createdAt: {
+        updatedDt: {
           [Op.between]: [startDate, endDate]
         }
       }
-    } */).then(function (data) {
+    }).then(function (data) {
       res.end(JSON.stringify(data))
 
     })
   }
 
 })
-
-app.post("/upload", upload.single("file"), excelController.upload);
-
 
 app.get('*', function (req, res) {
   console.log('inside serving request');

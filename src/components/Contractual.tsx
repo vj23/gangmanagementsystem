@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Form, Input, InputNumber, Button } from 'antd';
+import { DatePicker, Space } from 'antd';
 
 const layout = {
     labelCol: { span: 4 },
@@ -24,11 +25,41 @@ export default class Contractual extends React.Component<any, any>{
     constructor(props) {
         super(props)
     }
+    onFinish(values: any) {
+        let self = this;
+        console.log(values);
+        let updatedDt = values.task.Date.format("YYYY-MM-DD");
+        let obj = {}
+        obj[this.props.action] = values.task[this.props.action]
+        obj["incharge"] = this.props.loginUserObj.username.split("@")[0]
+        obj["updatedDt"] = updatedDt
+
+        let gangtaskjson = []
+        gangtaskjson.push(obj)
+        fetch('/updateWork', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(gangtaskjson),
+        }).then((res) => {
+            return res.json()
+        }).then((json) => {
+            console.log(json)
+        })
+        console.log(gangtaskjson)
+
+    };
     render() {
         return (
-            <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
+            <Form {...layout} name="nest-messages" onFinish={this.onFinish.bind(this)} validateMessages={validateMessages}>
 
-                <Form.Item name={['user', 'CONTRACTUAL']} label="CONTRACTUAL">
+                <Form.Item name={['task', 'Date']} label="Date">
+
+                    <DatePicker />
+
+                </Form.Item>
+                <Form.Item name={['task', this.props.action]} label="Update">
                     <Input.TextArea />
                 </Form.Item>
                 <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
